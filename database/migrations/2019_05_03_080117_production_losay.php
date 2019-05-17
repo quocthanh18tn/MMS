@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class PauseMayducdong extends Migration
+class ProductionLosay extends Migration
 {
     /**
      * Run the migrations.
@@ -14,15 +14,13 @@ class PauseMayducdong extends Migration
     public function up()
     {
         //
-         Schema::create('pause_mayducdong', function (Blueprint $table) {
+        Schema::create('production_losay', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('idEmployee')->unsigned();
-            $table->foreign('idEmployee')->references('id')->on('employees');
-            $table->string('idBusbar');
-            $table->dateTime('pause');
-            $table->dateTime('resume');
-            $table->dateTime('start');
+            $table->integer('idLosay');
 
+            $table->dateTime('start')->nullable();
+            $table->dateTime('finish')->nullable();
+            $table->dateTime('finishtemp')->nullable();
             $table->timestamps();
         }); 
     }
@@ -35,7 +33,7 @@ class PauseMayducdong extends Migration
     public function down()
     {
         //
-        Schema::dropIfExists('pause_mayducdong');
+        Schema::dropIfExists('production_losay');
 
     }
 }

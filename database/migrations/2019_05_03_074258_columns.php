@@ -20,7 +20,7 @@ class Columns extends Migration
             $table->string('name')->nullable();
 
             $table->integer('idPanel')->unsigned();
-            $table->foreign('idPanel')->references('id')->on('panels');
+            $table->foreign('idPanel')->references('id')->on('panels')->onDelete('cascade')->onUpdate('cascade');
             
             $table->timestamps();
         }); 

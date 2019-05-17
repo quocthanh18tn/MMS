@@ -17,7 +17,7 @@ class ProductionMaybenddong extends Migration
         Schema::create('production_maybenddong', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('idEmployee')->unsigned();
-            $table->foreign('idEmployee')->references('id')->on('employees');
+            $table->foreign('idEmployee')->references('id')->on('employees')->onDelete('cascade')->onUpdate('cascade');
             $table->string('idBusbar');
             $table->dateTime('start');
 

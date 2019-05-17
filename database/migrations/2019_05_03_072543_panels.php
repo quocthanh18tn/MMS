@@ -18,7 +18,7 @@ class Panels extends Migration
             $table->increments('id');
             $table->string('idPanel')->unique();
             $table->integer('idProject')->unsigned();
-            $table->foreign('idProject')->references('id')->on('projects');
+            $table->foreign('idProject')->references('id')->on('projects')->onDelete('cascade')->onUpdate('cascade');
             $table->string('name');
             $table->date('expectFat')->nullable();
             $table->date('expectDelivery')->nullable();
@@ -26,7 +26,7 @@ class Panels extends Migration
             $table->date('adjustDelivery')->nullable();
             $table->date('Delivery')->nullable();
             $table->integer('idPaneltype')->unsigned()->nullable();
-            $table->foreign('idPaneltype')->references('id')->on('paneltype');
+            $table->foreign('idPaneltype')->references('id')->on('paneltype')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         }); 
     }

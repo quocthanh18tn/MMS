@@ -18,9 +18,9 @@ class Orders extends Migration
             $table->increments('id');
             $table->string('idOrder');
             $table->integer('idProject')->unsigned();
-            $table->foreign('idProject')->references('id')->on('projects');
+            $table->foreign('idProject')->references('id')->on('projects')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('idCustomer')->unsigned();
-            $table->foreign('idCustomer')->references('id')->on('customers');
+            $table->foreign('idCustomer')->references('id')->on('customers')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         }); 
     }

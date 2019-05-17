@@ -17,13 +17,13 @@ class Irregulartask extends Migration
         Schema::create('irregulartask', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('idColumn')->unsigned();
-            $table->foreign('idColumn')->references('id')->on('columns');
+            $table->foreign('idColumn')->references('id')->on('columns')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('idEmployee')->unsigned();
-            $table->foreign('idEmployee')->references('id')->on('employees');
+            $table->foreign('idEmployee')->references('id')->on('employees')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('idStage')->unsigned();
-            $table->foreign('idStage')->references('id')->on('stage');
-            $table->dateTime('start');
-            $table->dateTime('finish');
+            $table->foreign('idStage')->references('id')->on('stage')->onDelete('cascade')->onUpdate('cascade');
+            $table->dateTime('start')->nullable();
+            $table->dateTime('finish')->nullable();
             $table->timestamps();
         }); 
     }

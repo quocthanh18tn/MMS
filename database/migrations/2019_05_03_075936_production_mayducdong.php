@@ -17,13 +17,13 @@ class ProductionMayducdong extends Migration
         Schema::create('production_mayducdong', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('idEmployee')->unsigned();
-            $table->foreign('idEmployee')->references('id')->on('employees');
+            $table->foreign('idEmployee')->references('id')->on('employees')->onDelete('cascade')->onUpdate('cascade');
             
             $table->string('idBusbar');
             $table->dateTime('start');
-            $table->dateTime('finish');
-            $table->string('NoBar'); // number of bar
-            $table->string('NoHole'); //number of hole
+            $table->dateTime('finish')->nullable();
+            $table->string('NumBar')->nullable(); // number of bar
+            $table->string('NumHole')->nullable(); //number of hole
 
             $table->timestamps();
         }); 
