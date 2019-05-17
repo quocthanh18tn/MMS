@@ -89,9 +89,11 @@ class ProjectController extends Controller
            $this->validate($request,
             [
                 'id'=>'required|unique:projects,idProject,'.$id,
+                'name'=>'required,'
             ],
             [
                 'id.unique' => 'ID is existed',
+                'name.required' => 'Fill name project',
             ]);  
           $project = Projects::where('id',$id)->first();
           $project->idProject = $request->id;
@@ -119,9 +121,13 @@ class ProjectController extends Controller
             $this->validate($request,
             [
                 'phone'=>'required|unique:customers,phone',
+                'id'=>'min:3|max:3',
             ],
             [
                 'phone.unique' => 'Phone is existed',
+                'id.min' => 'Id has only 3 character',
+                'id.max' => 'Id has only 3 character',
+
             ]);
           $customer = new Customers;
           $customer->idCustomer = $request->id;
@@ -184,12 +190,61 @@ class ProjectController extends Controller
            $this->validate($request,
             [
                 'phone'=>'required|unique:customers,phone,'.$id,
+                'name'=>'required',
+                'id'=>'required|min:3|max:3',
+                'company'=>'required',
+                'address'=>'required',
             ],
             [
                 'phone.unique' => 'Phone is existed',
+                'phone.required' => 'Enter phone number',
+                'id.required' => 'Enter id customer',
+                'id.min' => 'Id has only 3 character',
+                'id.max' => 'Id has only 3 character',
+                'company.required' => 'Enter company',
+                'address.required' => 'Enter address',
             ]);  
           $customer = Customers::where('id',$id)->first();
-          $customer->idCustomer = $request->id;
+          if ($customer->idCustomer != $request->id)
+          {
+            //start
+            $orderObj = $customer->orders;
+            foreach ($orderObj as $orderObj)
+            {
+              $idProject = $orderObj->projects->idProject;
+              $idCustomer = $orderObj->customers->idCustomer;
+              $prefixPanel=$idProject."-".$idCustomer."-".$orderObj->idOrder;
+              $panel = Panels::where('idPanel','like',"$prefixPanel%")->get();
+              foreach ($panel as $panel) 
+              {
+                # code...
+                foreach ($panel->columns as $columnObj )
+                {
+                  $idColumn = $columnObj->idColumn;
+                  $objColumn = Columns::where('idColumn','=',$idColumn)->first();
+                  # code...
+                  $lenght=strlen($idColumn);
+                  $msduan=substr($idColumn, 0,7);
+                  $temp=substr($idColumn,10,$lenght-10);
+                  $mskhungtu1=$msduan.$request->id.$temp;
+                  $objColumn->idColumn=$mskhungtu1;
+                  $objColumn->save();
+                }
+                $idPanel = $panel->idPanel;
+                $objPanel = Panels::where('idPanel','=',$idPanel)->first();
+                $lenght=strlen($idPanel);
+                $msduan=substr($idPanel,0,7);
+                $temp = substr($idPanel,10,$lenght-10);
+                $mstu1=$msduan.$request->id.$temp;
+                $objPanel->idPanel=$mstu1;
+                $objPanel->save();
+                  // echo $mstu1."<br>";
+              }
+            }
+            //end
+            //change id cua panel and column
+             $customer->idCustomer = $request->id;
+          }
           $customer->name = $request->name;
           $customer->company = $request->company;
           $customer->address = $request->address;
@@ -197,7 +252,7 @@ class ProjectController extends Controller
           $customer->created_at = new DateTime();
 
           $customer->save();
-          
+
           return redirect('project/listcustomer.html')->with('success','Update  customer success!');
         }
 
@@ -230,11 +285,21 @@ class ProjectController extends Controller
                  'file' => 'required',
             ]);
           $idProject = $request->idProject;
-          $idCustomer = $request->customer; 
-          $count = Orders::where([
+          $idCustomer = $request->customer; //id primary key cua table customer
+          //bug xay ra tai vi mac du cai idcustomer la giong nhau, nhung primary la khac nhau, nen no se lam bien count sai
+          $idCustomerReal = Customers::where('id','=',$idCustomer)->first()->idCustomer;
+          $idCustomerRealObj = Customers::where('idCustomer','=',$idCustomerReal)->get();
+          $count = 1; // bien de dem gia tri order
+          foreach ($idCustomerRealObj as $obj)
+          {
+            $temp =Orders::where([
             ['idProject','=',$idProject], //so snah index primary key
-            ['idCustomer','=',$idCustomer]
-            ])->get()->count()+1;
+            ['idCustomer','=',$obj->id]
+            ])->get()->count();
+            $count +=$temp;
+            # code...
+          }
+          
           //count variable in order to count value in table order, ( bien so lan dat hang)
           if ($count <10)
             $count="0".$count;
