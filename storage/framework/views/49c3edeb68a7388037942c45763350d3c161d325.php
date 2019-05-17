@@ -1,7 +1,4 @@
-
-@extends('layout.index')
-
-@section('css')
+<?php $__env->startSection('css'); ?>
 	<style type="text/css" media="screen">
 		#p1{
 			font-size: 25px;
@@ -50,7 +47,7 @@
 		  margin-left: 2%;
 		}
 
-		@media only screen and (max-width: 500px) {
+		@media  only screen and (max-width: 500px) {
 		  /* For mobile phones: */
 		 .grid-container {
 		  grid-template-columns: 100px 100px 100px 100px 50px;
@@ -62,30 +59,30 @@
 		}
 		
 	</style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
-{{-- page content --}}
-@include('layout.headerproject')
-{{-- page content --}}
+<?php $__env->startSection('content'); ?>
+
+<?php echo $__env->make('layout.headerproject', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
   
 
 
 <br>
-	{{-- id reivew all project --}}
+	
 
 	<p id="p1">Edit Panel </p>
     <hr>
     <form method="post" action="project/editpanel.html" >
-	    <input type="hidden" name="_token" value="{{csrf_token()}}">
+	    <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
             <div class="grid-container">
 	  			<div class="grid-item word" >Project ID:</div>
               	<div class="grid-item ">
                      <select  id="idProject" name="idProject">
                        	  <option value="0" >SELECT ...</option>
-                     	   @foreach ($project as $project)
-                           <option  value="{{$project->id}}" >{{$project->idProject}}</option>
-                     	   @endforeach
+                     	   <?php $__currentLoopData = $project; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                           <option  value="<?php echo e($project->id); ?>" ><?php echo e($project->idProject); ?></option>
+                     	   <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                      </select>
               	</div>
 	  			<div class="grid-item word" >Customer Order:</div>
@@ -154,9 +151,9 @@
 	                      	<div class="col-sm-4">
 	                      		<select  id="type" name="type">
 		                       	   <option value="" >SELECT ...</option>
-		                     	   @foreach ($paneltype as $paneltype)
-		                           <option  value="{{$paneltype->id}}" >{{$paneltype->name}}</option>
-		                     	   @endforeach
+		                     	   <?php $__currentLoopData = $paneltype; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $paneltype): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+		                           <option  value="<?php echo e($paneltype->id); ?>" ><?php echo e($paneltype->name); ?></option>
+		                     	   <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 		                     	</select>
 	                      	</div>
                       	</div>
@@ -243,9 +240,9 @@
     </form>
 
            
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
     <script >
         $(document).ready(function(){
      
@@ -287,14 +284,14 @@
         });
 
     </script>
-    {{-- script thong bao error or success --}}
-    @if ($errors->any())
-    	 @foreach($errors->all() as $err)
+    
+    <?php if($errors->any()): ?>
+    	 <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $err): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 	           	<script type="text/javascript">
 				    $(document).ready(function(){
 				   swal({
 				  title: "Error!",
-				  text: "{{$err}}",
+				  text: "<?php echo e($err); ?>",
 				  icon: "error",
 				})
 				   .then((willDelete) => {
@@ -302,14 +299,14 @@
 				})
 				});
 				</script>
-        @endforeach
-	@endif
-   @if (session('success'))
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+	<?php endif; ?>
+   <?php if(session('success')): ?>
 	   	<script type="text/javascript">
 		    $(document).ready(function(){
 		   swal({
 		  title: "Congratulation!",
-		  text: "{{session('success')}}",
+		  text: "<?php echo e(session('success')); ?>",
 		  icon: "success",
 		})
 		   .then((willDelete) => {
@@ -317,13 +314,13 @@
 		})
 		});
 		</script>
-	@endif
-      @if (session('error'))
+	<?php endif; ?>
+      <?php if(session('error')): ?>
            	<script type="text/javascript">
 			    $(document).ready(function(){
 			   swal({
 			  title: "Error!",
-			  text: "{{session('error')}}",
+			  text: "<?php echo e(session('error')); ?>",
 			  icon: "error",
 			})
 			   .then((willDelete) => {
@@ -331,8 +328,10 @@
 			})
 			});
 			</script>
-	@endif
-@endsection
+	<?php endif; ?>
+<?php $__env->stopSection(); ?>
 
 
 
+
+<?php echo $__env->make('layout.index', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

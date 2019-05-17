@@ -1,4 +1,4 @@
-{{-- page content --}}
+
     <div class="fakeimg1 text-center">
        <h1> HAI NAM AUTOMATION </h1>
        <div class="p1">PROJECT MANAGEMENT</div>
@@ -43,7 +43,7 @@
 
       <a href="logout" class="w3-bar-item w3-button" id="lib-thanh-logout">Logout</a>
     </div>
-{{-- page content --}}
+
 
 
 

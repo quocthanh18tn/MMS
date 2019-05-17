@@ -85,6 +85,8 @@ Route::group(['prefix'=>'ajax'],function(){
 		Route::get('edit_display_panel_info/{idProject}/{idOrder}','AjaxController@getedit_display_panel_info');
 		//dispaly full infor panel
 		Route::get('edit_display_panel_info_full/{idProject}','AjaxController@getedit_display_panel_info_full');
+		//dis play column in panel
+		Route::get('edit_display_column_info_full/{idPanel}','AjaxController@getedit_display_column_info_full');
 
 	});
 
@@ -133,6 +135,8 @@ Route::group(['prefix'=>'project'],function(){
 		//editpanel
 		Route::get('editpanel.html','ProjectController@geteditpanel');
 		Route::post('editpanel.html','ProjectController@posteditpanel');
-		
+		//edit column
+		Route::get('editcolumn.html','ProjectController@geteditcolumn');
+		Route::get('editcolumn_action.html/{idColumn}/{idColumnNew}/{name}/{idPanel}/{mode}','ProjectController@geteditcolumn_action');
 		
 	});

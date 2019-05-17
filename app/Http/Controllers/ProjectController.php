@@ -35,10 +35,12 @@ class ProjectController extends Controller
         {
             $this->validate($request,
             [
-                'id'=>'required|unique:projects,idProject',
+                'id'=>'required|unique:projects,idProject|min:6|max:6',
             ],
             [
                 'id.unique' => 'ID is existed',
+                'id.max' => 'Only 6 character in ID project',
+                'id.min' => 'Only 6 character in ID project',
             ]);
           $project = new Projects;
           $project->idProject = $request->id;
@@ -152,7 +154,18 @@ class ProjectController extends Controller
 
     public function getdeletecustomer($id)
         {
-            $customer = Customers::where('id',$id);
+            $customer = Customers::where('id',$id)->first();
+            $orderObj = $customer->orders;
+            foreach ($orderObj as $orderObj)
+            {
+              $idProject = $orderObj->projects->idProject;
+              $idCustomer = $orderObj->customers->idCustomer;
+              $prefixPanel=$idProject."-".$idCustomer."-".$orderObj->idOrder;
+              $panel = Panels::where('idPanel','like',"$prefixPanel%");
+              $panel->delete();
+              $orderObj->delete();
+              
+            }
             $customer->delete();
             return redirect('project/listcustomer.html')->with('success','Delete  customer success!');
         }
@@ -184,6 +197,7 @@ class ProjectController extends Controller
           $customer->created_at = new DateTime();
 
           $customer->save();
+          
           return redirect('project/listcustomer.html')->with('success','Update  customer success!');
         }
 
@@ -315,7 +329,12 @@ class ProjectController extends Controller
 
     public function getdeleteorder($id)
         {
-            $order = orders::where('id',$id);
+            $order = orders::where('id',$id)->first();
+            $idProject = $order->projects->idProject;
+            $idCustomer = $order->customers->idCustomer;
+            $prefixPanel=$idProject."-".$idCustomer."-".$order->idOrder;
+            $panel = Panels::where('idPanel','like',"$prefixPanel%");
+            $panel->delete();
             $order->delete();
             return redirect('project/listorder.html')->with('success','Delete  order success!');
         }
@@ -518,10 +537,170 @@ class ProjectController extends Controller
               $paneltype= Panel_type::all();
               return view('project.panel.edit_panel',['customer'=>$customer,'project'=>$project,'paneltype'=>$paneltype]);
           } 
-    public function posteditpanel()
-          {
-           
-          }
-   
-}
 
+    public function posteditpanel(Request $request)
+          {
+          // variable in form edit pass to controller 
+            $idPanel = $request->idPanel;  // id cua table panel
+            $idPanelEdit= $request->idPaneledit;
+            $name = $request->name;
+            $type = $request->type;
+            $numbercolumn = $request->col;
+            $fat = $request->fat;
+            $delivery = $request->delivery;
+            $adjfat = $request->adjfat;
+            $adjdelivery = $request->adjdelivery;
+            $act = $request->act;
+
+            $panelObj = Panels::where('id','=',$idPanel)->first();
+            if ($name !="")
+              $panelObj->name = $name;
+             if ($idPanelEdit !="")
+              $panelObj->idPanel = $idPanelEdit;
+            if ($type !="")
+              $panelObj->idPaneltype = $type;
+            if ($fat !="")
+              $panelObj->expectFat = $fat;
+            if ($delivery !="")
+              $panelObj->expectDelivery = $delivery;
+            if ($adjfat !="")
+              $panelObj->adjustFat = $adjfat;
+            if ($adjdelivery !="")
+              $panelObj->adjustDelivery = $adjdelivery;
+            if ($act !="")
+              $panelObj->Delivery = $act;
+            // kiem tra xem neu khung tu ton tai roi thi k lam gi, neu chua thi insert vao
+            if($numbercolumn !="")
+            {
+              for ($index = 1 ; $index <=$numbercolumn; $index++)
+              {
+                if ($index <10)
+                {
+                  $idColumn = $panelObj->idPanel.'-'.'00'.$index;
+                  $columnObj = Columns::where('idColumn','=',$idColumn)->first();
+                  if (count($columnObj)!=0);
+                  else
+                  {
+                    $columnObj = new Columns;
+                    $columnObj->idColumn = $idColumn;
+                    $columnObj->idPanel  = $panelObj->id;
+                    $columnObj->save();
+                  }
+                }
+                else if ($index <100)
+                {
+                  $idColumn = $panelObj->idPanel.'-'.'0'.$index;
+                  $columnObj = Columns::where('idColumn','=',$idColumn)->first();
+                  if (count($columnObj)!=0);
+                  else
+                  {
+                    $columnObj = new Columns;
+                    $columnObj->idColumn = $idColumn;
+                    $columnObj->idPanel  = $panelObj->id;
+                    $columnObj->save();
+                  }
+                }
+                else
+                {
+                  $idColumn = $panelObj->idPanel.'-'.$index;
+                  $columnObj = Columns::where('idColumn','=',$idColumn)->first();
+                  if (count($columnObj)!=0);
+                  else
+                  {
+                    $columnObj = new Columns;
+                    $columnObj->idColumn = $idColumn;
+                    $columnObj->idPanel  = $panelObj->id;
+                    $columnObj->save();
+                  }
+                }
+
+              }
+              // kiem tra neu du khung tu thi xoa di
+              for ($index = $numbercolumn+1 ; $index <=1000; $index++)
+              {
+                if ($index <10)
+                {
+                  $idColumn = $panelObj->idPanel.'-'.'00'.$index;
+                  $columnObj = Columns::where('idColumn','=',$idColumn)->first();
+                  if (count($columnObj)!=0)
+                  {
+                    $columnObj->delete();
+                   
+                  }
+                }
+                else if ($index <100)
+                {
+                  $idColumn = $panelObj->idPanel.'-'.'0'.$index;
+                  $columnObj = Columns::where('idColumn','=',$idColumn)->first();
+                  if (count($columnObj)!=0)
+                  {
+                    $columnObj->delete();
+                   
+                  }
+                }
+                else
+                {
+                  $idColumn = $panelObj->idPanel.'-'.$index;
+                  $columnObj = Columns::where('idColumn','=',$idColumn)->first();
+                  if (count($columnObj)!=0)
+                  {
+                    $columnObj->delete();
+                   
+                  }
+                }
+              }
+
+            }
+
+            $panelObj->save();
+            return redirect('project/editpanel.html')->with('success','Edit  panel success!');
+          }
+
+          //edit column
+          public function geteditcolumn()
+          {
+             $customer = Customers::all();
+              $project = Projects::all();
+              $paneltype= Panel_type::all();
+              return view('project.panel.edit_column',['customer'=>$customer,'project'=>$project,'paneltype'=>$paneltype]);
+          } 
+          public function geteditcolumn_action($idColumn,$idColumnNew,$name,$idPanel,$mode)
+          {         
+                if($mode ==1)
+                {
+
+                    $columnObj = new Columns;
+                    $columnObj->idColumn = $idColumn;
+                    if ($name !="xxx")
+                    $columnObj->name = $name;
+                    $columnObj->idPanel  = $idPanel;
+                    $columnObj->save();
+                    return 1;
+                }
+                else if ($mode ==2)
+                {
+                    $columnObj = Columns::where('id','=',$idColumn);
+                    $columnObj->delete();
+                    return 1;
+                }
+                else if ($mode ==3)
+                {
+                  //neu ma = xxx thi tuong tu gia tri null, vi URL get null se bi loi nen phai xai xxx xem nhu la 1 kieu dang null de check
+                    if ($idColumnNew!="xxx" || $name !="xxx")
+                    {
+                      $columnObj = Columns::where('id','=',$idColumn)->first();
+                      if ($idColumnNew !="xxx")
+                        $columnObj->idColumn = $idColumnNew;
+                      if ($name !="xxx")
+                        $columnObj->name = $name;
+                      $columnObj->idPanel  = $idPanel;
+                      $columnObj->save();
+                      return 1;
+                      
+                    }
+                    else
+                      return 0;
+
+                }
+          }
+}

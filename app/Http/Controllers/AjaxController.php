@@ -214,5 +214,14 @@ class AjaxController extends Controller
          return $view;
         //return view ajax
     } 
+    //display column infor
+     public function getedit_display_column_info_full($idPanel)
+    {
+        $panel = Panels::where('id','=',$idPanel)->first();
+         $view = view('project.panel.edit_ajax_column',['panel'=>$panel])->render();
+         return $view;
+    }  
+
+
 }
 

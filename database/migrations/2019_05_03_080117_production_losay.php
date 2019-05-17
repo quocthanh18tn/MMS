@@ -17,10 +17,10 @@ class ProductionLosay extends Migration
         Schema::create('production_losay', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('idLosay');
-
             $table->dateTime('start')->nullable();
             $table->dateTime('finish')->nullable();
             $table->dateTime('finishtemp')->nullable();
+            $table->integer('count_request_error')->default('0');
             $table->timestamps();
         }); 
     }
