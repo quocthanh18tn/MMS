@@ -88,19 +88,48 @@ class ProjectController extends Controller
         {
            $this->validate($request,
             [
-                'id'=>'required|unique:projects,idProject,'.$id,
-                'name'=>'required,'
+                'id'=>'required|min:6|max:6|unique:projects,idProject,'.$id,
+                'name'=>'required',
             ],
             [
                 'id.unique' => 'ID is existed',
+                'id.required' => 'Fill id project',
+                'id.min' => 'Only 6 character',
+                'id.max' => 'Only 6 character',
                 'name.required' => 'Fill name project',
             ]);  
           $project = Projects::where('id',$id)->first();
-          $project->idProject = $request->id;
+          if ($project->idProject!=$request->id)
+          {
+            $panelObj = Panels::where('idProject','=',$id)->get();
+            foreach ($panelObj as $panel)
+            {
+              $idPanel = $panel->id;
+              $columnObj = Columns::where('idPanel','=',$idPanel)->get();
+              foreach ($columnObj as $col)
+              {
+                $mskhungtu = $col->idColumn;
+                $lenght=strlen($mskhungtu);
+                $temp=substr($mskhungtu,6,$lenght-6);
+                $col->idColumn=$request->id.$temp;
+                $col->save();
+              }
+              $mstu = $panel->idPanel;
+              $lenght=strlen($mstu);
+              $temp = substr($mstu,6,$lenght-6);
+              $panel->idPanel=$request->id.$temp;
+              $panel->save();
+            }
+            $project->idProject = $request->id;
+          }
           $project->name = $request->name;
           $project->created_at = new DateTime();
 
           $project->save();
+          //edit idpanel and column
+
+
+
           return redirect('project/listproject.html')->with('success','Update  project success!');
         }
 
