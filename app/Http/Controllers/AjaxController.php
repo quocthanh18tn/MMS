@@ -222,6 +222,22 @@ class AjaxController extends Controller
          return $view;
     }  
 
+    public function getproduction_list_panel($idProject)
+    {
+        $panelObj = Panels::where('idProject','=',$idProject)->get();
+        echo "<option value=''>SELECT</option>";
+        foreach ($panelObj as $panel)
+           echo "<option value='".$panel->id."'>".$panel->idPanel." :".$panel->name."</option>";
+        //return view ajax
+    } 
+    public function getproduction_list_column($idPanel)
+    {
+        $columnObj = Columns::where('idPanel','=',$idPanel)->get();
+        echo "<option value=''>SELECT</option>";
+        foreach ($columnObj as $col)
+           echo "<option value='".$col->id."'>".$col->idColumn."</option>";
+        //return view ajax
+    } 
 
 }
 

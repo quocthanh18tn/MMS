@@ -87,6 +87,10 @@ Route::group(['prefix'=>'ajax'],function(){
 		Route::get('edit_display_panel_info_full/{idProject}','AjaxController@getedit_display_panel_info_full');
 		//dis play column in panel
 		Route::get('edit_display_column_info_full/{idPanel}','AjaxController@getedit_display_column_info_full');
+		//production
+		Route::get('production_list_panel/{idProject}','AjaxController@getproduction_list_panel');
+		Route::get('production_list_column/{idPanel}','AjaxController@getproduction_list_column');
+
 
 	});
 
@@ -139,4 +143,14 @@ Route::group(['prefix'=>'project','middleware'=>'project'],function(){
 		Route::get('editcolumn.html','ProjectController@geteditcolumn');
 		Route::get('editcolumn_action.html/{idColumn}/{idColumnNew}/{name}/{idPanel}/{mode}','ProjectController@geteditcolumn_action');
 		
+	});
+
+
+//production
+Route::group(['prefix'=>'production'],function(){
+		// admin/theloai/danhsach TheLoaiController
+		Route::get('index.html','ProductionController@index');
+		Route::get('listemployee.html','ProductionController@getlistemployee');
+		//create employee and manager
+		Route::get('taskAssigment.html','ProductionController@gettaskAssigment');
 	});

@@ -22,12 +22,14 @@ class UserController extends Controller
                 {
                     return redirect('administration/index.html')->with('success','Have a good day!');
                 }
-                else if($user->idType=='2')
+                else if($user->idType=='3')
                 {
                     return redirect('project/index.html')->with('success','Have a good day!');
                 }
-                else if($user->idType=='3')
+                else if($user->idType=='2'||$user->idType=='21'||$user->idType=='22'||$user->idType=='23'||$user->idType=='24'||$user->idType=='25'||$user->idType=='26'||$user->idType=='27')
                 {
+                    return redirect('production/index.html')->with('success','Have a good day!');
+
                 }
 
             }
