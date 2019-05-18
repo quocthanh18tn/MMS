@@ -90,7 +90,7 @@ Route::group(['prefix'=>'ajax'],function(){
 
 	});
 
-Route::group(['prefix'=>'project'],function(){
+Route::group(['prefix'=>'project','middleware'=>'project'],function(){
 		// admin/theloai/danhsach TheLoaiController
 		Route::get('index.html','ProjectController@index');
 		//create employee and manager
